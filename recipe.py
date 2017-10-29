@@ -36,3 +36,13 @@ def recipes():
 def recipe_detail():
     "Renders the recipes detail page"
     return render_template('recipe_detail.html')
+
+@app.route('/recipes_add')
+def recipes_add():
+    "Renders the create page for recipes"
+    return render_template('recipes_add.html')
+
+@app.route('/recipe_edit')
+def recipe_edit():
+    "Renders the edit page for recipes"
+    return render_template('recipe_edit.html')
