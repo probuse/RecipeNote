@@ -46,3 +46,18 @@ def recipes_add():
 def recipe_edit():
     "Renders the edit page for recipes"
     return render_template('recipe_edit.html')
+
+@app.route('/category')
+def category():
+    "Renders the category page"
+    return render_template('category.html')
+
+@app.route('/category_create')
+def category_create():
+    "Renders the page to create a new category"
+    return render_template('category_create.html')
+
+@app.route('/category_edit')
+def category_edit():
+    "Renders the page for editing and deleting a category"
+    return render_template('category_edit.html')
