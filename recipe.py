@@ -8,9 +8,9 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 @app.route('/')
-def base():
+def index():
     "Renders the landing page"
-    return render_template('base.html')
+    return render_template('index.html')
 
 @app.route('/register')
 def register():
