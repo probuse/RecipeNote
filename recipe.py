@@ -26,3 +26,13 @@ def login():
 def forgot_password():
     "Renders forgot-password page"
     return render_template('forgot-password.html')
+
+@app.route('/recipes')
+def recipes():
+    "Renders the recipes page"
+    return render_template('recipes.html')
+
+@app.route('/recipe_detail')
+def recipe_detail():
+    "Renders the recipes detail page"
+    return render_template('recipe_detail.html')
