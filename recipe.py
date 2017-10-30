@@ -15,12 +15,12 @@ def index():
 @app.route('/register')
 def register():
     "Renders the index page"
-    return render_template('register.html')
+    return render_template('register1.html')
 
 @app.route('/login')
 def login():
     "Renders login page"
-    return render_template('login.html')
+    return render_template('login_.html')
 
 @app.route('/forgot-password')
 def forgot_password():
