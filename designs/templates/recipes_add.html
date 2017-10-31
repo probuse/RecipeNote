@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+      <br>
+      <h1>Create a new Recipe</h1>
+      <form>
+      <div class="form-group">
+        <!-- <label for="exampleInputEmail1">Email address</label> -->
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Recipe Name">
+        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+      </div>
+      <div class="form-group">
+        <label for="exampleSelect1">Select Category</label>
+        <select class="form-control" id="exampleSelect1">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="exampleTextarea">Enter Recipe Ingredients as a list</label>
+        <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+          <label for="example2Textarea">How is the recipe prepared?</label>
+          <textarea class="form-control" id="example2Textarea" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+          <input type="text" class="form-control" id="exampleInputTime" aria-describedby="timeHelp" placeholder="How long does it take to prepare?">
+          <small id="timeHelp" class="form-text text-muted">Please specify how long it takes in minutes.</small>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputFile">Upload Recipe Image</label>
+        <input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
+        <small id="fileHelp" class="form-text text-muted">This image will help you to visually find a recipe</small>
+      </div>
+      <div class="text-center"><button type="submit" class="btn-lg btn-primary">Add Recipe</button></div><br>
+    </form>
+    </div>
+{% endblock %}

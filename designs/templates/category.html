@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<br>
+<div class="text-right">
+    <a href="/category_create">
+        <button class="btn-primary btn-lg">Add Category</button>
+    </a>
+</div>
+<h1>Your Categories</h1>
+<br>
+<table class="table">
+    <thead class="thead-inverse">
+        <tr>
+        <th>Category Name</th>
+        <th>Number of Recipes</th>
+        <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td>Local Food</td>
+        <td>3</td>
+        <td><a href="#">edit</a></td>
+        </tr>
+        <tr>
+        <td>Drinks</td>
+        <td>6</td>
+        <td><a href="#">edit</a></td>
+        </tr>
+        <tr>
+        <td>Salads</td>
+        <td>2</td>
+        <td><a href="#">edit</a></td>
+        </tr>
+    </tbody>
+    </table>
+{% endblock %}
