@@ -3,6 +3,8 @@
 
 [![Build Status](https://travis-ci.org/probuse/RecipeNote.svg?branch=development)](https://travis-ci.org/probuse/RecipeNote)
 
+[![Coverage Status](https://coveralls.io/repos/github/probuse/RecipeNote/badge.svg?branch=master)](https://coveralls.io/github/probuse/RecipeNote?branch=master)
+
 ## How to use RecipeNote
 **For now it can be run locally on your machine.**
 ### That is 
