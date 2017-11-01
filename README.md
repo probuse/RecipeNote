@@ -3,7 +3,7 @@ The innovative RecipeNote app is an application that allows users to create, sav
 
 ## How to use RecipeNote
 **For now it can be run locally on your machine.**
-That is 
+### That is 
     1. Create a virtualenv that runs Python3 on your Machine
     2. Activate the virtualenv.
     3. Clone the repository into the activated virtualenv. This will create a folder with a name RecipeNote on your machine
