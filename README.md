@@ -1,7 +1,7 @@
 # RecipeNote
+#### The innovative RecipeNote app is an application that allows users to create, save and share recipes.
 
 [![Build Status](https://travis-ci.org/probuse/RecipeNote.svg?branch=development)](https://travis-ci.org/probuse/RecipeNote)
-The innovative RecipeNote app is an application that allows users to create, save and share recipes.
 
 ## How to use RecipeNote
 **For now it can be run locally on your machine.**
