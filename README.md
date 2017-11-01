@@ -1,4 +1,6 @@
 # RecipeNote
+
+[![Build Status](https://travis-ci.org/probuse/RecipeNote.svg?branch=development)](https://travis-ci.org/probuse/RecipeNote)
 The innovative RecipeNote app is an application that allows users to create, save and share recipes.
 
 ## How to use RecipeNote
@@ -12,6 +14,6 @@ The innovative RecipeNote app is an application that allows users to create, sav
         i. export FLASK_APP=recipe.py
         ii. flask run
     
-    6. Then go to your favourite browser and input **localhost:5000** to run the app
+    6. Then go to your favourite browser and input localhost:5000 to run the app
     
 
