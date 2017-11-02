@@ -1,11 +1,10 @@
-""" 
-contains all the logic for RecipeNote app RecipeNote app is a 
+"""contains all the logic for RecipeNote app RecipeNote app is a 
 web application that lets users create, edit, delete and even share 
 their favourite recipes with their friends and family.
 """
-from flask import Flask, render_template
+from flask import render_template
 
-app = Flask(__name__)
+from . import app
 
 @app.route('/')
 def index():
