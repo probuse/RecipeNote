@@ -13,7 +13,7 @@
     3. Clone the repository into the activated virtualenv. This will create a folder with a name RecipeNote on your machine
     4. In your terminal or command line, navigate to this folder.
     5. Run the following commands in your terminal 
-        i. export FLASK_APP=recipe.py
+        i. export FLASK_APP=run.py
         ii. flask run
     
     6. Then go to your favourite browser and input localhost:5000 to run the app
