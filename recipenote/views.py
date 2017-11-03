@@ -8,7 +8,7 @@ from flask import render_template, flash, session, redirect, url_for, request
 from functools import wraps
 
 from . import app
-from .forms import LoginForm, RegisterationForm
+from .forms import LoginForm, RegisterationForm, RecipesForm, CategoryForm
 
 app.secret_key = "StumblingFromRightQuestionsToWrongAnswers"
 
@@ -32,6 +32,29 @@ class User(Base):
         self.email = email
         self.password = password
         self.id = self.generate_session_id("users")
+
+
+class Recipe(Base):
+    "Stores the recipe object during a session"
+
+    def __init__(self, name, category, ingredients, prep_method, prep_time):
+        self.name = str(name).title()
+        self.category = str(category).title()
+        self.user_id = session["logged_in"]["id"]
+        self.ingredients = ingredients
+        self.prep_method = prep_method
+        self.prep_time = prep_time
+        self.id = self.generate_session_id("recipe")
+
+
+class Category(Base):
+    "Stores the category object during a session"
+
+    def __init__(self, name):
+        self.name = name
+        self.id = session["logged_in"]["id"]
+        self.id = self.generate_session_id("category")
+
 
 
 def create_appplication_session_keys():
@@ -95,14 +118,12 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        print("hello")
         users = session["users"]
         for key in users:
             user = users[key]
             username = form.username.data.strip()
             password = form.password.data.strip()
-            print(username, password)
-            print("form => {} {}".format(user["username"], user["password"]))
+        
             if user["username"] == username and user["password"] == password:
                 return redirect(url_for("recipes"))
             message = "Wrong username or password, Please Try Again"
@@ -112,21 +133,38 @@ def login():
     return render_template('login.html', title='Login', form=form)
 
 @app.route('/recipes')
-
 def recipes():
     "Renders the recipes page"
     return render_template('recipes.html')
 
 @app.route('/recipe_detail')
-
 def recipe_detail():
     "Renders the recipes detail page"
     return render_template('recipe_detail.html')
 
-@app.route('/recipes_add')
+@app.route('/recipe_add', methods=["GET", "POST"])
 def recipes_add():
     "Renders the create page for recipes"
-    return render_template('recipes_add.html')
+    create_appplication_session_keys()
+    form_recipe = RecipesForm()
+    form_categories = CategoryForm()
+
+    if form_recipe.validate_on_submit():
+        recipe = RecipesForm(
+            form_recipe.name.data, 
+            form_recipe.ingredients.data, 
+            form_recipe.prep_method.data, 
+            form_recipe.prep_time
+            )
+        session["recipe"][recipe.id] = vars(recipe)
+
+        flash({"message": "Your recipe has been successfully added"})
+        return redirect(url_for("recipes"))
+    return render_template(
+            'recipes_add.html', 
+            form_recipe=form_recipe, 
+            form_categories=form_categories
+        )
 
 @app.route('/recipe_edit')
 def recipe_edit():
@@ -138,7 +176,7 @@ def category():
     "Renders the category page"
     return render_template('category.html')
 
-@app.route('/category_create')
+@app.route('/category_add')
 def category_create():
     "Renders the page to create a new category"
     return render_template('category_create.html')
@@ -151,4 +189,6 @@ def category_edit():
 @app.route('/logout')
 def logout():
     "Renders the logout page"
-    return render_template('logout.html')
+    session.pop('users', None)
+    flash("You are now logged out")
+    return redirect(url_for("index"))
