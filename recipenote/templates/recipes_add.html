@@ -2,34 +2,28 @@
 {% block content %}
       <br>
       <h1>Create a new Recipe</h1>
-      <form>
+      <form method="POST" action="recipe_add">
+          {{ form_recipe.hidden_tag() }}
+          {{ form_categories.hidden_tag() }}
+      <div class="form-group">{{ form_recipe.name(placeholder="e.g rolex", class="form-control", required="required", id="name", type="text") }}</div>
       <div class="form-group">
-        <!-- <label for="exampleInputEmail1">Email address</label> -->
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Recipe Name">
-        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-      </div>
-      <div class="form-group">
-        <label for="exampleSelect1">Select Category</label>
-        <select class="form-control" id="exampleSelect1">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
+          <label for="exampleSelect1">Select Category</label>
+          <select class="form-control" id="exampleSelect1">
+            <option>Local Food</option>
+            <option>Salaads</option>
+            <option>Juice</option>
+            <option>Italian</option>
+          </select>
+        </div>
+      <!-- <div class="form-group">
+          {% for form_category in form_categories %}
+            <option>{{ form_category(placeholder="Select a Category for your recipe", class="form-control", required="required", id="name", type="text") }}</option>
+          {% endfor %}
         </select>
-      </div>
-      <div class="form-group">
-        <label for="exampleTextarea">Enter Recipe Ingredients as a list</label>
-        <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
-      </div>
-      <div class="form-group">
-          <label for="example2Textarea">How is the recipe prepared?</label>
-          <textarea class="form-control" id="example2Textarea" rows="3"></textarea>
-      </div>
-      <div class="form-group">
-          <input type="text" class="form-control" id="exampleInputTime" aria-describedby="timeHelp" placeholder="How long does it take to prepare?">
-          <small id="timeHelp" class="form-text text-muted">Please specify how long it takes in minutes.</small>
-      </div>
+      </div>   -->
+      <div class="form-group">{{ form_recipe.ingredients(placeholder="Enter a list of Ingredients for this recipe", class="form-control", required="required", id="ingredients", type="text") }}</div>      
+      <div class="form-group">{{ form_recipe.prep_method(placeholder="Enter a list of instructions to prepare recipe", class="form-control", required="required", id="prep_method", type="text") }}</div>      
+      <!-- <div class="form-group">{{ form_recipe.prep_time(placeholder="How long does it take to prepare this recipe?", class="form-control", required="required", id="prep_time", type="text") }}</div>       -->
       <div class="form-group">
         <label for="exampleInputFile">Upload Recipe Image</label>
         <input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
