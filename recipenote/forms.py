@@ -17,3 +17,26 @@ class LoginForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
     submit = SubmitField('login')
+
+
+class RecipesForm(FlaskForm):
+    "Form to help manipulate recipes"
+    name = StringField('name', validators=[DataRequired()])
+    ingredients = TextAreaField('ingredients', validators=[DataRequired()])
+    prep_method = TextAreaField('method', validators=[DataRequired()])
+    prep_time = StringField('time', validators=[DataRequired()])
+
+
+class DeleteRecipesForm(FlaskForm):
+    "Form to help us delete a recipe"
+    id = StringField('id', validators=[DataRequired()])
+
+
+class CategoryForm(FlaskForm):
+    "Form to help manipulate categories"
+    name = StringField('name', validators=[DataRequired()])
+
+
+class DeleteCategoryForm(FlaskForm):
+    "Form to help us delete a category"
+    id = StringField('id', validators=[DataRequired()])
