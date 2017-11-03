@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 <br><br>
-<p>Please Register to continue</p>
-<form>
-    <div class="form-group">
-        <input type="text" class="form-control" id="username" placeholder="Enter username" required>
-    </div>
-    <div class="form-group">
-      <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" required>
-    </div>
-    <div class="form-group">
-      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
-    </div>
-    <div class="form-group">
-        <input type="password" class="form-control" id="exampleInputPassword1" placeholder=" Confirm Password" required>
-    </div>
-    <div class="text-center"><button class="btn-primary btn-lg">Register</button></div>
+<h2>Please Register to continue</h2>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+    {{ message }}
+{% endfor %}
+{% endif %}
+{% endwith %}
+<form method="post", action="/register">
+    {{ form.hidden_tag() }}
+    <div class="form-group">{{ form.username(placeholder="e.g etwin", class="form-control", required="required", id="username", type="text") }}</div>
+    <div class="form-group">{{ form.email(placeholder="e.g etwin@us.com", class="form-control", required="required", id="email", type="email") }}</div>
+    <div class="form-group">{{ form.password(placeholder="Enter Pasword", class="form-control", required="required", id="password", type="password") }}</div>
+    <div class="form-group">{{ form.password2(placeholder="Confirm Password", class="form-control", required="required", id="password2", type="password") }}</div>
+    <div class="text-center"><button class="btn-lg btn-sign-up btn-primary" type="submit">Register</button></div>
 </form>
+<br><br>
 {% endblock %}
