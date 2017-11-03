@@ -4,14 +4,14 @@
     <h1>Create a new Category</h1>
     <form>
         <div class="form-group">
-            <input type="text" class="form-control" id="categoryName" placeholder="Enter Category Name">
+            <input type="text" class="form-control" id="categoryName" placeholder="Enter Category Name" required>
         </div>
         <div class="form-group">
             <div class="row">
                 <div class="col-md-6"><label for="SelectRecipes">Select Recipe(s)</label></div>
-                <div class="col-md-6 text-right"><a  href="#">Add new Recipe</a></div>
+                <div class="col-md-6 text-right"><a  href="/recipe_add">Add new Recipe</a></div>
             </div>
-            <select multiple class="form-control" id="SelectRecipes">
+            <select multiple class="form-control" id="SelectRecipes" required>
                 <option>Katogo</option>
                 <option>Lowombo</option>
                 <option>Rolex</option>
