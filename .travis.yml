@@ -2,7 +2,9 @@ language: python
 python:
    - "3.4"
 
-    
 script: 
     - "python test.py"
-    - nosetests --with-coverage
+    - nosetests --with-coverage --cover-package=test
+
+after_sucess:
+    - coveralls
