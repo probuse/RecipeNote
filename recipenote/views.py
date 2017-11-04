@@ -133,16 +133,19 @@ def login():
     return render_template('login.html', title='Login', form=form)
 
 @app.route('/recipes')
+@login_required
 def recipes():
     "Renders the recipes page"
     return render_template('recipes.html')
 
 @app.route('/recipe_detail')
+@login_required
 def recipe_detail():
     "Renders the recipes detail page"
     return render_template('recipe_detail.html')
 
 @app.route('/recipe_add', methods=["GET", "POST"])
+@login_required
 def recipes_add():
     "Renders the create page for recipes"
     create_appplication_session_keys()
@@ -167,26 +170,31 @@ def recipes_add():
         )
 
 @app.route('/recipe_edit')
+@login_required
 def recipe_edit():
     "Renders the edit page for recipes"
     return render_template('recipe_edit.html')
 
 @app.route('/category')
+@login_required
 def category():
     "Renders the category page"
     return render_template('category.html')
 
 @app.route('/category_add')
+@login_required
 def category_create():
     "Renders the page to create a new category"
     return render_template('category_create.html')
 
 @app.route('/category_edit')
+@login_required
 def category_edit():
     "Renders the page for editing and deleting a category"
     return render_template('category_edit.html')
 
 @app.route('/logout')
+@login_required
 def logout():
     "Renders the logout page"
     session.pop('users', None)
