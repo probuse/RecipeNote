@@ -1,6 +1,6 @@
 """All tests for the category model go here."""
 import unittest
-from recipenote.models.user import Category
+# from recipenote.models.user import Category
 
 class CategoryModelTestCase(unittest.TestCase):
     "tests functionality and features of category.py"
