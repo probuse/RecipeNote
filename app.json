@@ -1,0 +1,6 @@
+{
+    "name": "RecipeNote",
+    "description": "The innovative RecipeNote app is an application that allows users to create, save and share recipes",
+    "repository": "https://github.com/probuse/RecipeNote/tree/development",
+    "keywords": ["recipes", "cooking", "food"]
+}
