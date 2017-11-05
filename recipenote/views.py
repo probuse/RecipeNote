@@ -40,9 +40,9 @@ class Recipe(Base):
     def __init__(self, name, category, ingredients, prep_method, prep_time):
         self.name = str(name).title()
         self.category = str(category).title()
-        self.user_id = session["logged_in"]["id"]
         self.ingredients = ingredients
         self.prep_method = prep_method
+        self.user_id = session["logged_in"]["id"]
         self.prep_time = prep_time
         self.id = self.generate_session_id("recipe")
 
@@ -52,7 +52,7 @@ class Category(Base):
 
     def __init__(self, name):
         self.name = name
-        self.id = session["logged_in"]["id"]
+        self.user_id = session["logged_in"]["id"]
         self.id = self.generate_session_id("category")
 
 
@@ -61,8 +61,14 @@ def create_appplication_session_keys():
     "creates application session for different keys"
     if "users" not in session:
         session["users"] = {}
+    if "category" not in session:
+        session["category"] = {}
     if "recipe" not in session:
         session["recipe"] = {}
+    if "logged_in" not in session:
+        session["logged_in"] = None
+   
+    
 
 
 def login_required(f):
@@ -84,7 +90,6 @@ def index():
 @app.route('/register', methods=["GET", "POST"])
 def register():
     "Renders the register page"
-    session.pop("users", None)
     create_appplication_session_keys()
     form = RegisterationForm()
    
@@ -92,7 +97,6 @@ def register():
         # Check for password mismatch
         if form.password.data != form.password2.data:
             message = "Your passwords do not match"
-            print(message)
             flash(message)
             return render_template(
                 'register.html', 
@@ -107,6 +111,7 @@ def register():
         )
 
         session["users"][new_user.id] = vars(new_user)
+        session['logged_in'] = vars(new_user)
         flash({"message": "Your account has been created, Login to continue"})
         return redirect(url_for("login"))
     return render_template("register.html", title="Create Profile", form=form)
@@ -175,17 +180,40 @@ def recipe_edit():
     "Renders the edit page for recipes"
     return render_template('recipe_edit.html')
 
+@app.route('/category_add', methods=["GET", "POST"])
+@login_required
+def category_create():
+    "Renders the page to create a new category"
+    create_appplication_session_keys()
+    form_categories = CategoryForm()
+    if form_categories.validate_on_submit():
+        print('Hello')
+        category = Category(form_categories.name.data)
+        print(category.name)
+        session["category"][category.id] = vars(category)
+        # print(session["category"])
+        return redirect(url_for("category"))
+    # print(session["category"])
+    return render_template('category_create.html',
+                            form_categories=form_categories)
+
 @app.route('/category')
 @login_required
 def category():
     "Renders the category page"
-    return render_template('category.html')
+    create_appplication_session_keys()
+    form_categories = CategoryForm()
+    form_recipes = RecipesForm()
 
-@app.route('/category_add')
-@login_required
-def category_create():
-    "Renders the page to create a new category"
-    return render_template('category_create.html')
+    categories = session["category"]
+    print(categories)
+    # recipes_per_category = session["recipe"]["category"]
+    # num_recipes_per_category = len(recipes_per_category)
+
+
+    return render_template('category.html', 
+                            categories=categories
+                           )
 
 @app.route('/category_edit')
 @login_required
