@@ -1,1 +1,1 @@
-web: gunicorn recipenote:app
+web: gunicorn run:app
