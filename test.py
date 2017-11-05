@@ -300,32 +300,32 @@ class FlaskTestCase(unittest.TestCase):
             self.assertEqual(len(categories), 0)
             self.assertIn(b'No Categories Added yet', response.data)
 
-    def test_one_category_exists_after_user_creates_category(self):
-        "Tests adding category works"
-        with app.test_client(self) as client:
-            client.post(
-                '/register', 
-                data=dict(
-                    username="etwin",
-                    email="etwin@us.com",
-                    password="etwin",
-                    password2="etwin"
-                ))
-            client.post(
-                '/login',
-                data=dict(
-                    username="etwin",
-                    password="etwin"
-                ))
-            client.post(
-                '/category_add',
-                data=dict(name="local foods"), 
-                follow_redirects=True
-            )
-            response = client.get('/category', content_type='html/text')
-            categories = session['category']
-            print(categories)
-            self.assertEqual(len(categories), 1)
+    # def test_one_category_exists_after_user_creates_category(self):
+    #     "Tests adding category works"
+    #     with app.test_client(self) as client:
+    #         client.post(
+    #             '/register', 
+    #             data=dict(
+    #                 username="etwin",
+    #                 email="etwin@us.com",
+    #                 password="etwin",
+    #                 password2="etwin"
+    #             ))
+    #         client.post(
+    #             '/login',
+    #             data=dict(
+    #                 username="etwin",
+    #                 password="etwin"
+    #             ))
+    #         client.post(
+    #             '/category_add',
+    #             data=dict(name="local foods"), 
+    #             follow_redirects=True
+    #         )
+    #         response = client.get('/category', content_type='html/text')
+    #         categories = session['category']
+    #         print(categories)
+    #         self.assertEqual(len(categories), 1)
 
 
     
