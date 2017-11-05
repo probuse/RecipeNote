@@ -1,6 +1,7 @@
 "Contains all the tests for RecipeNote app"
-from recipenote import app
 import unittest
+from flask import session
+from recipenote import app
 
 class FlaskTestCase(unittest.TestCase):
     "Handles testing in our app"
@@ -9,6 +10,8 @@ class FlaskTestCase(unittest.TestCase):
         "Helps set up our environment"
         self.app = app.test_client()
         app.config['WTF_CSRF_ENABLED'] = False
+
+        self.app.testing = True
 
     def test_index_page_loads_properly(self):
         "Tests if the index page loads properly"
@@ -254,6 +257,76 @@ class FlaskTestCase(unittest.TestCase):
         with app.test_client(self) as client:
             response = client.get('/logout', content_type='html/text')
             self.assertEqual(response.status_code, 302)
+
+    def test_one_user_exists_for_newly_user_signed_in_user(self):
+        "Tests user exixsts after sign up and login"
+        with app.test_client(self) as client:
+            client.post(
+                '/register', 
+                data=dict(
+                    username="etwin",
+                    email="etwin@us.com",
+                    password="etwin",
+                    password2="etwin"
+                ))
+            client.post(
+                '/login',
+                data=dict(
+                    username="etwin",
+                    password="etwin"
+                ))
+            user = session["users"]
+            self.assertEqual(len(user), 1)
+
+    def test_no_category_for_new_user(self):
+        "Tests no categories for a new user"
+        with app.test_client(self) as client:
+            client.post(
+                '/register', 
+                data=dict(
+                    username="etwin",
+                    email="etwin@us.com",
+                    password="etwin",
+                    password2="etwin"
+                ))
+            client.post(
+                '/login',
+                data=dict(
+                    username="etwin",
+                    password="etwin"
+                ))
+            response = client.get('/category', content_type="html/text")
+            categories = session["category"]
+            self.assertEqual(len(categories), 0)
+            self.assertIn(b'No Categories Added yet', response.data)
+
+    def test_one_category_exists_after_user_creates_category(self):
+        "Tests adding category works"
+        with app.test_client(self) as client:
+            client.post(
+                '/register', 
+                data=dict(
+                    username="etwin",
+                    email="etwin@us.com",
+                    password="etwin",
+                    password2="etwin"
+                ))
+            client.post(
+                '/login',
+                data=dict(
+                    username="etwin",
+                    password="etwin"
+                ))
+            client.post(
+                '/category_add',
+                data=dict(name="local foods"), 
+                follow_redirects=True
+            )
+            response = client.get('/category', content_type='html/text')
+            categories = session['category']
+            print(categories)
+            self.assertEqual(len(categories), 1)
+
 
     
   
