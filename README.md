@@ -5,6 +5,8 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/probuse/RecipeNote/badge.svg?branch=master)](https://coveralls.io/github/probuse/RecipeNote?branch=master)
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/probuse/RecipeNote/tree/development) 
+
 ## How to use RecipeNote
 **For now it can be run locally on your machine.**
 ### That is 
