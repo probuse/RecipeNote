@@ -327,6 +327,14 @@ class FlaskTestCase(unittest.TestCase):
     #         print(categories)
     #         self.assertEqual(len(categories), 1)
 
+    def test_edit_category_fuctionality_works(self):
+        "Tests editing category fuctionlaity works"
+        pass
+
+    def test_deleted_category_actually_gets_deleted(self):
+        "Tests if deleted category gets deleted"
+        pass
+
 
     
   
