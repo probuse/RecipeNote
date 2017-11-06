@@ -9,8 +9,11 @@ from functools import wraps
 
 from . import app
 from .forms import LoginForm, RegisterationForm, RecipesForm, CategoryForm
+from recipenote.models.user import User
 
 app.secret_key = "StumblingFromRightQuestionsToWrongAnswers"
+
+logged_in_users = {}
 
 class Base:
     "Used to generate session_id"
@@ -24,7 +27,7 @@ class Base:
 
         return session_id
 
-class User(Base):
+class SessionUser(Base):
     "Stores the user object during a session"
    
     def __init__(self, username, email, password):
@@ -82,6 +85,15 @@ def login_required(f):
             return redirect(url_for("login"))
     return wrap
 
+def get_user():
+    "Returns a user currently logged in info"
+    if 'logged_in' in session and session['logged_in'] is not None:
+        username = session['logged_in'].get('username')
+        email = session['logged_in'].get('email')
+        password = session['logged_in'].get('password')
+        user = User(username, email, password)
+        return username, email, password
+
 @app.route('/')
 def index():
     "Renders the landing page"
@@ -104,11 +116,17 @@ def register():
                 form=form
             )
 
-        new_user = User(
+        new_user = SessionUser(
             form.username.data,
             form.email.data,
             form.password.data
         )
+        user_object = User(
+            form.username.data, 
+            form.email.data, 
+            form.password.data
+        )
+        logged_in_users['1'] = user_object
 
         session["users"][new_user.id] = vars(new_user)
         session['logged_in'] = vars(new_user)
@@ -135,6 +153,7 @@ def login():
             flash(message)
     return render_template('login.html', title='Login', form=form)
 
+
 @app.route('/recipes')
 @login_required
 def recipes():
@@ -160,7 +179,6 @@ def recipes_add():
             form_recipe.name.data, 
             form_recipe.ingredients.data, 
             form_recipe.prep_method.data, 
-            form_recipe.prep_time
             )
         session["recipe"][recipe.id] = vars(recipe)
 
@@ -180,18 +198,16 @@ def recipe_edit():
 
 @app.route('/category_add', methods=["GET", "POST"])
 @login_required
-def category_create():
+def category_add():
     "Renders the page to create a new category"
     create_appplication_session_keys()
     form_categories = CategoryForm()
+    user = logged_in_users['1']
+
     if form_categories.validate_on_submit():
-        print('Hello')
-        category = Category(form_categories.name.data)
-        # print(category.name)
-        session["category"][category.id] = vars(category)
-        # print(session["category"])
+        user.create_category(form_categories.name.data)
+        print(user.username)
         return redirect(url_for("category"))
-    # print(session["category"])
     return render_template('category_create.html',
                             form_categories=form_categories)
 
@@ -200,18 +216,15 @@ def category_create():
 def category():
     "Renders the category page"
     create_appplication_session_keys()
-    form_categories = CategoryForm()
-    form_recipes = RecipesForm()
-
-    categories = session["category"]
-    print(session["category"])
+    user = logged_in_users['1']
+    categories = user.user_categories.keys()
+    print(categories)
     # recipes_per_category = session["recipe"]["category"]
     # num_recipes_per_category = len(recipes_per_category)
 
 
     return render_template('category.html', 
-                            categories=categories
-                           )
+                            categories=categories   )
 
 @app.route('/category_edit')
 @login_required
