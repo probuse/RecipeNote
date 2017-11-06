@@ -4,6 +4,7 @@
 
 class User(object):
     "controls user object"
+
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
@@ -13,7 +14,8 @@ class User(object):
 
     def create_category(self, category_name):
         "creates a category"
-        pass
+        self.user_categories[category_name] = []
+        return self.user_categories
 
     def edit_category(self, old_name, new_name):
         "Helps to edit a category name"
