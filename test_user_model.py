@@ -1,16 +1,17 @@
 """All tests for our models go here."""
 import unittest
-
+from recipenote.models.user import User
 
 class UserModelTestCase(unittest.TestCase):
     "tests features and funtionlity for user.py"
     
     def setUp(self):
-        pass
+        self.user = User("etwin", "etwin@us.com", "etwin")
 
     def test_user_has_creates_category(self):
         "Tests to see user has created a category"
-        pass
+        category = self.user.create_category('Local Foods')
+        self.assertListEqual(category['Local Foods'], [])
 
     def test_user_can_edit_category_name(self):
         "Tests user can edit category name"
