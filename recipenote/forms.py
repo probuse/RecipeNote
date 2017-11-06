@@ -24,8 +24,6 @@ class RecipesForm(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
     ingredients = TextAreaField('ingredients', validators=[DataRequired()])
     prep_method = TextAreaField('method', validators=[DataRequired()])
-    prep_time = StringField('time', validators=[DataRequired()])
-
 
 class DeleteRecipesForm(FlaskForm):
     "Form to help us delete a recipe"
