@@ -34,7 +34,7 @@ class DeleteRecipesForm(FlaskForm):
 
 class CategoryForm(FlaskForm):
     "Form to help manipulate categories"
-    name = StringField('name', validators=[DataRequired()])
+    name = StringField('name', validators=[DataRequired()]) 
 
 
 class DeleteCategoryForm(FlaskForm):
