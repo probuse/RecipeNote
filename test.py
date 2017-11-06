@@ -79,7 +79,7 @@ class FlaskTestCase(unittest.TestCase):
     def test_recipes_add_page_doesnot_load_for_guest_users(self):
         "tests to see that the recipe_add page loads correctly"
         with app.test_client(self) as client:
-            response = client.get('/recipe_add', content_type='html/text')
+            response = client.get('/recipes_add', content_type='html/text')
             self.assertEqual(response.status_code, 302)
 
     def test_recipes_add_page_contains_right_content_for_logged_in_users(self):
@@ -99,7 +99,7 @@ class FlaskTestCase(unittest.TestCase):
                     username="etwin",
                     password="etwin"
                 ))
-            response = client.get('/recipe_add', content_type='html/text')
+            response = client.get('/recipes_add', content_type='html/text')
             self.assertIn(b'Create a new Recipe', response.data)
 
     def test_recipe_edit_page_doesnot_load_for_guest_users(self):
