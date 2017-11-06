@@ -133,8 +133,6 @@ def login():
                 return redirect(url_for("recipes"))
             message = "Wrong username or password, Please Try Again"
             flash(message)
-            return redirect(url_for("login"))
-    
     return render_template('login.html', title='Login', form=form)
 
 @app.route('/recipes')
@@ -149,7 +147,7 @@ def recipe_detail():
     "Renders the recipes detail page"
     return render_template('recipe_detail.html')
 
-@app.route('/recipe_add', methods=["GET", "POST"])
+@app.route('/recipes_add', methods=["GET", "POST"])
 @login_required
 def recipes_add():
     "Renders the create page for recipes"
@@ -189,7 +187,7 @@ def category_create():
     if form_categories.validate_on_submit():
         print('Hello')
         category = Category(form_categories.name.data)
-        print(category.name)
+        # print(category.name)
         session["category"][category.id] = vars(category)
         # print(session["category"])
         return redirect(url_for("category"))
@@ -206,7 +204,7 @@ def category():
     form_recipes = RecipesForm()
 
     categories = session["category"]
-    print(categories)
+    print(session["category"])
     # recipes_per_category = session["recipe"]["category"]
     # num_recipes_per_category = len(recipes_per_category)
 
