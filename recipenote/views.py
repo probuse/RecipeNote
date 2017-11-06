@@ -9,8 +9,11 @@ from functools import wraps
 
 from . import app
 from .forms import LoginForm, RegisterationForm, RecipesForm, CategoryForm
+from recipenote.models.user import User
 
 app.secret_key = "StumblingFromRightQuestionsToWrongAnswers"
+
+logged_in_users = {}
 
 class Base:
     "Used to generate session_id"
@@ -24,7 +27,7 @@ class Base:
 
         return session_id
 
-class User(Base):
+class SessionUser(Base):
     "Stores the user object during a session"
    
     def __init__(self, username, email, password):
@@ -40,9 +43,9 @@ class Recipe(Base):
     def __init__(self, name, category, ingredients, prep_method, prep_time):
         self.name = str(name).title()
         self.category = str(category).title()
-        self.user_id = session["logged_in"]["id"]
         self.ingredients = ingredients
         self.prep_method = prep_method
+        self.user_id = session["logged_in"]["id"]
         self.prep_time = prep_time
         self.id = self.generate_session_id("recipe")
 
@@ -52,7 +55,7 @@ class Category(Base):
 
     def __init__(self, name):
         self.name = name
-        self.id = session["logged_in"]["id"]
+        self.user_id = session["logged_in"]["id"]
         self.id = self.generate_session_id("category")
 
 
@@ -61,8 +64,14 @@ def create_appplication_session_keys():
     "creates application session for different keys"
     if "users" not in session:
         session["users"] = {}
+    if "category" not in session:
+        session["category"] = {}
     if "recipe" not in session:
         session["recipe"] = {}
+    if "logged_in" not in session:
+        session["logged_in"] = None
+   
+    
 
 
 def login_required(f):
@@ -76,6 +85,15 @@ def login_required(f):
             return redirect(url_for("login"))
     return wrap
 
+def get_user():
+    "Returns a user currently logged in info"
+    if 'logged_in' in session and session['logged_in'] is not None:
+        username = session['logged_in'].get('username')
+        email = session['logged_in'].get('email')
+        password = session['logged_in'].get('password')
+        user = User(username, email, password)
+        return username, email, password
+
 @app.route('/')
 def index():
     "Renders the landing page"
@@ -84,7 +102,6 @@ def index():
 @app.route('/register', methods=["GET", "POST"])
 def register():
     "Renders the register page"
-    session.pop("users", None)
     create_appplication_session_keys()
     form = RegisterationForm()
    
@@ -92,7 +109,6 @@ def register():
         # Check for password mismatch
         if form.password.data != form.password2.data:
             message = "Your passwords do not match"
-            print(message)
             flash(message)
             return render_template(
                 'register.html', 
@@ -100,13 +116,20 @@ def register():
                 form=form
             )
 
-        new_user = User(
+        new_user = SessionUser(
             form.username.data,
             form.email.data,
             form.password.data
         )
+        user_object = User(
+            form.username.data, 
+            form.email.data, 
+            form.password.data
+        )
+        logged_in_users['1'] = user_object
 
         session["users"][new_user.id] = vars(new_user)
+        session['logged_in'] = vars(new_user)
         flash({"message": "Your account has been created, Login to continue"})
         return redirect(url_for("login"))
     return render_template("register.html", title="Create Profile", form=form)
@@ -128,21 +151,23 @@ def login():
                 return redirect(url_for("recipes"))
             message = "Wrong username or password, Please Try Again"
             flash(message)
-            return redirect(url_for("login"))
-    
     return render_template('login.html', title='Login', form=form)
 
+
 @app.route('/recipes')
+@login_required
 def recipes():
     "Renders the recipes page"
     return render_template('recipes.html')
 
 @app.route('/recipe_detail')
+@login_required
 def recipe_detail():
     "Renders the recipes detail page"
     return render_template('recipe_detail.html')
 
-@app.route('/recipe_add', methods=["GET", "POST"])
+@app.route('/recipes_add', methods=["GET", "POST"])
+@login_required
 def recipes_add():
     "Renders the create page for recipes"
     create_appplication_session_keys()
@@ -154,7 +179,6 @@ def recipes_add():
             form_recipe.name.data, 
             form_recipe.ingredients.data, 
             form_recipe.prep_method.data, 
-            form_recipe.prep_time
             )
         session["recipe"][recipe.id] = vars(recipe)
 
@@ -167,26 +191,49 @@ def recipes_add():
         )
 
 @app.route('/recipe_edit')
+@login_required
 def recipe_edit():
     "Renders the edit page for recipes"
     return render_template('recipe_edit.html')
 
+@app.route('/category_add', methods=["GET", "POST"])
+@login_required
+def category_add():
+    "Renders the page to create a new category"
+    create_appplication_session_keys()
+    form_categories = CategoryForm()
+    user = logged_in_users['1']
+
+    if form_categories.validate_on_submit():
+        user.create_category(form_categories.name.data)
+        print(user.username)
+        return redirect(url_for("category"))
+    return render_template('category_create.html',
+                            form_categories=form_categories)
+
 @app.route('/category')
+@login_required
 def category():
     "Renders the category page"
-    return render_template('category.html')
+    create_appplication_session_keys()
+    user = logged_in_users['1']
+    categories = user.user_categories.keys()
+    print(categories)
+    # recipes_per_category = session["recipe"]["category"]
+    # num_recipes_per_category = len(recipes_per_category)
 
-@app.route('/category_add')
-def category_create():
-    "Renders the page to create a new category"
-    return render_template('category_create.html')
+
+    return render_template('category.html', 
+                            categories=categories   )
 
 @app.route('/category_edit')
+@login_required
 def category_edit():
     "Renders the page for editing and deleting a category"
     return render_template('category_edit.html')
 
 @app.route('/logout')
+@login_required
 def logout():
     "Renders the logout page"
     session.pop('users', None)

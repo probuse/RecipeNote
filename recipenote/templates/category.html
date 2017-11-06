@@ -9,6 +9,8 @@
 <h1>Your Categories</h1>
 <br>
 <table class="table">
+    {% if categories %}
+    {% for category in categories %}
     <thead class="thead-inverse">
         <tr>
         <th>Category Name</th>
@@ -18,11 +20,11 @@
     </thead>
     <tbody>
         <tr>
-        <td>Local Food</td>
+        <td>{{ category }}</td>
         <td>3</td>
         <td><a href="/recipe_edit">edit</a></td>
         </tr>
-        <tr>
+        <!-- <tr>
         <td>Drinks</td>
         <td>6</td>
         <td><a href="/recipe_edit">edit</a></td>
@@ -31,7 +33,11 @@
         <td>Salads</td>
         <td>2</td>
         <td><a href="/recipe_edit">edit</a></td>
-        </tr>
+        </tr> -->
     </tbody>
+    {% endfor %}
+    {% else %}
+    <p>No Categories Added yet</p>
+    {% endif %}
     </table>
 {% endblock %}
