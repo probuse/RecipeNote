@@ -1,7 +1,7 @@
 """All tests for the recipe model go here"""
 import unittest
 
-class RecipeTestCase(unittest.TestCase):
+class RecipeModelTestCase(unittest.TestCase):
     "Tests features and functionality for recipe.py"
 
     def setUp(self):
@@ -11,22 +11,13 @@ class RecipeTestCase(unittest.TestCase):
         "Tests category exists before a category is added to it"
         pass
 
-    def test_recipe_has_all_required_attributes_to_create_it(self):
-        "Tests new recipe has all required_attributes as it is being created."
+    def test_recipe_object_has_name(self):
+        "Tests new recipe has a name attribute."
         pass
 
-    def test_recipe_names_are_unique(self):
-        "Tests all recipes have unique names"
+    def test_recipe_object_has_ingredients(self):
+        "Tests new recipe has ingredients list"
         pass
-
-    def test_deleted_recipe_no_longer_exists(self):
-        "Tests deleted recipes actually get deleted"
-        pass
-
-    def user_has_no_recipes_in_category_before_recipes_are_created(self):
-        "Tests that before a user has created any recipes, no recipes exist"
-        pass
-
 
 if __name__ == "__main__":
     unittest.main()
