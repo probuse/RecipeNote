@@ -38,7 +38,7 @@ class User(object):
         "Creates a recipe"
         if category_name not in self.user_categories.keys():
             raise KeyError("{} does not exist".format(category_name))
-        recipe = Recipe(recipe_name)
+        recipe = Recipe(recipe_name, recipe_prep_method)
         self.user_categories[category_name].append(recipe_name)
         self.user_recipes[recipe_name] = recipe_prep_method.splitlines()
         return recipe
