@@ -7,10 +7,10 @@ install: "pip install -r requirements.txt"
 
 before_install:
     - pip install pytest-cov
-    - pip install coveralls
+    # - pip install coveralls
 
 script: 
-    - "python test.py"
+    # - "python test.py"
     - nosetests --with-coverage --cover-package=test
 
 after_sucess:
