@@ -21,9 +21,10 @@ class User(object):
 
     def edit_category_name(self, old_name, new_name):
         "Helps to edit a category name"
-        if old_name in self.user_categories:
+        if old_name in self.user_categories.keys():
             self.user_categories[new_name] = self.user_categories.pop(old_name)
-        raise KeyError('{} does not exist as a category name'.format(old_name))
+        else:
+            raise KeyError('{} does not exist as a category name'.format(old_name))
 
     def delete_category(self, category_name):
         "deletes a category with a name category_name"
@@ -44,11 +45,17 @@ class User(object):
 
     def edit_recipe_name(self, old_name, new_name):
         "Helps to update a recipe name to a new name"
-        pass
+        print(self.user_recipes)
+        if old_name in self.user_recipes.keys():
+            self.user_recipes[new_name] = self.user_recipes.pop(old_name)
+        else:
+            raise KeyError('{} does not exist as a recipe name'.format(old_name))
 
-    def edit_recipe_prep_method(self, old_method, new_method):
+    def edit_recipe_prep_method(self,recipe, new_method):
         "Updates recipe_prep_method to a new method"
-        pass
+        if recipe in self.user_recipes:
+            self.user_recipes[recipe] = new_method
+        # raise KeyError('{} not does not exist as a recipe'.format(recipe))
 
     def delete_recipe(self, recipe_name):
         "Deletes recipe with recipe name"
