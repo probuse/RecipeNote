@@ -1,6 +1,7 @@
 "Controls the User Object"
-# email will act as a unique key
 
+from recipenote.models.category import Category
+from recipenote.models.recipe import Recipe
 
 class User(object):
     "controls user object"
@@ -14,16 +15,19 @@ class User(object):
 
     def create_category(self, category_name):
         "creates a category"
-        self.user_categories[category_name] = []
-        return self.user_categories
+        category = Category(category_name)
+        self.user_categories[category.name] = []
+        return category
 
-    def edit_category(self, old_name, new_name):
+    def edit_category_name(self, old_name, new_name):
         "Helps to edit a category name"
-        pass
+        if old_name in self.user_categories:
+            self.user_categories[new_name] = self.user_categories.pop(old_name)
+        raise KeyError('{} does not exist as a category name'.format(old_name))
 
     def delete_category(self, category_name):
         "deletes a category with a name category_name"
-        pass
+        del self.user_categories[category_name]
 
     def create_recipes(
         self, 
@@ -31,7 +35,12 @@ class User(object):
         category_name, 
         recipe_prep_method):
         "Creates a recipe"
-        pass
+        if category_name not in self.user_categories.keys():
+            raise KeyError("{} does not exist".format(category_name))
+        recipe = Recipe(recipe_name)
+        self.user_categories[category_name].append(recipe_name)
+        self.user_recipes[recipe_name] = recipe_prep_method.splitlines()
+        return recipe
 
     def edit_recipe_name(self, old_name, new_name):
         "Helps to update a recipe name to a new name"
