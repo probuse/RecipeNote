@@ -85,17 +85,17 @@ def login_required(f):
             return redirect(url_for("login"))
     return wrap
 
-def get_user():
-    "Returns a user currently logged in info"
-    if 'logged_in' in session and session['logged_in'] is not None:
-        username = session['logged_in'].get('username')
-        email = session['logged_in'].get('email')
-        password = session['logged_in'].get('password')
-        user = User(username, email, password)
-        return username, email, password
+# def get_user():
+#     "Returns a user currently logged in info"
+#     if 'logged_in' in session and session['logged_in'] is not None:
+#         username = session['logged_in'].get('username')
+#         email = session['logged_in'].get('email')
+#         password = session['logged_in'].get('password')
+#         user = User(username, email, password)
+#         return username, email, password
 
 @app.route('/')
-def index():
+def index():    
     "Renders the landing page"
     return render_template('index.html')
 
@@ -126,7 +126,7 @@ def register():
             form.email.data, 
             form.password.data
         )
-        logged_in_users['1'] = user_object
+        logged_in_users['user'] = user_object
 
         session["users"][new_user.id] = vars(new_user)
         session['logged_in'] = vars(new_user)
@@ -158,6 +158,7 @@ def login():
 @login_required
 def recipes():
     "Renders the recipes page"
+
     return render_template('recipes.html')
 
 @app.route('/recipe_detail')
@@ -180,7 +181,6 @@ def recipes_add():
             form_recipe.ingredients.data, 
             form_recipe.prep_method.data, 
             )
-        session["recipe"][recipe.id] = vars(recipe)
 
         flash({"message": "Your recipe has been successfully added"})
         return redirect(url_for("recipes"))
@@ -202,11 +202,10 @@ def category_add():
     "Renders the page to create a new category"
     create_appplication_session_keys()
     form_categories = CategoryForm()
-    user = logged_in_users['1']
-
+    user = logged_in_users['user']
+    
     if form_categories.validate_on_submit():
         user.create_category(form_categories.name.data)
-        print(user.username)
         return redirect(url_for("category"))
     return render_template('category_create.html',
                             form_categories=form_categories)
@@ -216,12 +215,8 @@ def category_add():
 def category():
     "Renders the category page"
     create_appplication_session_keys()
-    user = logged_in_users['1']
+    user = logged_in_users['user']
     categories = user.user_categories.keys()
-    print(categories)
-    # recipes_per_category = session["recipe"]["category"]
-    # num_recipes_per_category = len(recipes_per_category)
-
 
     return render_template('category.html', 
                             categories=categories   )
@@ -230,12 +225,16 @@ def category():
 @login_required
 def category_edit():
     "Renders the page for editing and deleting a category"
-    return render_template('category_edit.html')
+    user = logged_in_users['user']
+    form = CategoryForm()
+    # form = CategoryForm(form)
+    return render_template('category_edit.html', form=form)
 
 @app.route('/logout')
 @login_required
 def logout():
     "Renders the logout page"
     session.pop('users', None)
+    del logged_in_users['user']
     flash("You are now logged out")
     return redirect(url_for("index"))
