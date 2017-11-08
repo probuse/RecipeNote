@@ -64,10 +64,6 @@ def create_appplication_session_keys():
     "creates application session for different keys"
     if "users" not in session:
         session["users"] = {}
-    if "category" not in session:
-        session["category"] = {}
-    if "recipe" not in session:
-        session["recipe"] = {}
     if "logged_in" not in session:
         session["logged_in"] = None
    
@@ -84,15 +80,6 @@ def login_required(f):
             flash("You need to login first.")
             return redirect(url_for("login"))
     return wrap
-
-# def get_user():
-#     "Returns a user currently logged in info"
-#     if 'logged_in' in session and session['logged_in'] is not None:
-#         username = session['logged_in'].get('username')
-#         email = session['logged_in'].get('email')
-#         password = session['logged_in'].get('password')
-#         user = User(username, email, password)
-#         return username, email, password
 
 @app.route('/')
 def index():    
@@ -158,43 +145,80 @@ def login():
 @login_required
 def recipes():
     "Renders the recipes page"
+    user = logged_in_users['user']
+    user_recipes = user.user_recipes
+    print(user_recipes)
+    return render_template('recipes.html', user_recipes=user_recipes)
 
-    return render_template('recipes.html')
-
-@app.route('/recipe_detail')
+@app.route('/recipe_detail/<recipe_name>')
 @login_required
-def recipe_detail():
+def recipe_detail(recipe_name):
     "Renders the recipes detail page"
-    return render_template('recipe_detail.html')
+    user = logged_in_users['user']
+
+    for recipe in user.user_recipes.keys():
+        if recipe == recipe_name:
+            prep_method = user.user_recipes[recipe]
+    return render_template('recipe_detail.html', 
+                            recipe_name=recipe_name,
+                            prep_method=prep_method)
 
 @app.route('/recipes_add', methods=["GET", "POST"])
 @login_required
 def recipes_add():
     "Renders the create page for recipes"
     create_appplication_session_keys()
+    user = logged_in_users['user']
     form_recipe = RecipesForm()
     form_categories = CategoryForm()
+    categories = user.user_categories.keys()
+
+    if request.method == 'POST':
+        selected_category = request.form['selectedCategory']
 
     if form_recipe.validate_on_submit():
-        recipe = RecipesForm(
+        new_recipe = user.create_recipes(
             form_recipe.name.data, 
-            form_recipe.ingredients.data, 
-            form_recipe.prep_method.data, 
-            )
-
+            selected_category, 
+            form_recipe.prep_method.data)
+        print(new_recipe.name)
         flash({"message": "Your recipe has been successfully added"})
         return redirect(url_for("recipes"))
     return render_template(
             'recipes_add.html', 
             form_recipe=form_recipe, 
-            form_categories=form_categories
+            categories=categories
         )
 
-@app.route('/recipe_edit')
+@app.route('/recipe_edit', methods=['POST', 'GET'])
+@app.route('/recipe_edit/<recipe_name>', methods=['POST', 'GET'])
 @login_required
-def recipe_edit():
+def recipe_edit(recipe_name=None):
     "Renders the edit page for recipes"
-    return render_template('recipe_edit.html')
+    user = logged_in_users['user']
+    # recipe = user.
+    form_recipe = RecipesForm()
+
+    if recipe_name is not None:
+
+        if request.method == 'POST':
+            new_name_category = request.form['selectedCategory']
+
+        
+        if form_recipe.validate_on_submit():
+            new_name = form_recipe.name.data
+            edited_prep_method = form_recipe.prep_method.data
+            # edited_category_name = user.edit_recipe_name(old_name, new_name)
+            user.create_recipes(
+                new_name, 
+                new_name_category, 
+                edited_prep_method)
+            print("++++", new_name, new_name_category, edited_prep_method, "++++")
+            return redirect(url_for('recipes'))
+    
+    return render_template('recipe_edit.html', 
+                            form_recipe=form_recipe,
+                            recipe_name=recipe_name)
 
 @app.route('/category_add', methods=["GET", "POST"])
 @login_required
@@ -221,14 +245,21 @@ def category():
     return render_template('category.html', 
                             categories=categories   )
 
-@app.route('/category_edit')
+@app.route('/category_edit/<name>')
 @login_required
-def category_edit():
+def category_edit(name):
     "Renders the page for editing and deleting a category"
+    category = Category()
+    form = CategoryForm(obj=category)
     user = logged_in_users['user']
-    form = CategoryForm()
-    # form = CategoryForm(form)
-    return render_template('category_edit.html', form=form)
+
+    if form.validate_on_submit():
+        user.edit_category_name(form.name.data)
+        print(category.name)
+    return render_template(
+            'category_edit.html', 
+            form=form,
+            name=name)
 
 @app.route('/logout')
 @login_required
