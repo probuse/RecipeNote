@@ -48,6 +48,11 @@ class User(object):
         print(self.user_recipes)
         if old_name in self.user_recipes.keys():
             self.user_recipes[new_name] = self.user_recipes.pop(old_name)
+            for recipe in self.user_categories.values():
+                if old_name in recipe:
+                    recipe.remove(old_name)
+                    recipe.append(new_name)
+
         else:
             raise KeyError('{} does not exist as a recipe name'.format(old_name))
 
