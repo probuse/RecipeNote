@@ -22,7 +22,7 @@ class LoginForm(FlaskForm):
 class RecipesForm(FlaskForm):
     "Form to help manipulate recipes"
     name = StringField('name', validators=[DataRequired()])
-    ingredients = TextAreaField('ingredients', validators=[DataRequired()])
+    # ingredients = TextAreaField('ingredients', validators=[DataRequired()])
     prep_method = TextAreaField('method', validators=[DataRequired()])
 
 class DeleteRecipesForm(FlaskForm):
