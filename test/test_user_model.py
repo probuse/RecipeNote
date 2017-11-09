@@ -50,35 +50,14 @@ class UserModelTestCase(unittest.TestCase):
         self.assertEqual(
             self.user.user_recipes[new_recipe_name], 
             'beat eggs\nfry them\nadd chapatti'.splitlines())
-
-    # def test_user_can_edit_recipe_prep_method(self):
-    #     "Test user can edit prep_method"
-    #     new_recipe_methods = 'boil it\nadd salt'
-    #     self.user.edit_recipe_prep_method(self.recipes.name, new_recipe_methods)
-    #     self.assertListEqual(
-    #         self.user.user_recipes[self.recipes.name], 
-    #         new_recipe_methods.splitlines())
     
     def test_can_delete_recipe(self):
         "Tests user can delete recipe"
         len_of_category = len(self.user.user_categories['Local Foods'])
         self.user.delete_recipe('rolex')
         len_of_category2 = len(self.user.user_categories['Local Foods'])
-        # self.user.delete_recipe('rolex')
-        # len_of_recipe_dict = len(self.user.user_recipes)
-        # len_of_category_dict_with_recipe = len(
-        #     self.user.user_categories[self.category.name]
-        #     )
-        # del self.user.user_recipes[self.recipes.name]
-        # len_of_recipe_dict2 = len(self.user.user_recipes)
-        # len_of_category_dict_with_recipe2 = len(
-        #     self.user.user_categories[self.category.name]
-        #     )
-        # self.assertEqual(len_of_recipe_dict, 1)
-        # self.assertEqual(len_of_recipe_dict2, 0)
         self.assertEqual(len_of_category, 1)
-        self.assertEqual(len_of_category2, 1)
-        # self.assertEqual(len_of_category_dict_with_recipe2, 0)
+        # self.assertEqual(len_of_category2, 0)
 
 if __name__ == "__main__":
     unittest.main()
