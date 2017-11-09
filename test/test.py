@@ -2,6 +2,7 @@
 import unittest
 from flask import session
 from recipenote import app
+from recipenote.models.user import User
 
 class FlaskTestCase(unittest.TestCase):
     "Handles testing in our app"
@@ -12,6 +13,7 @@ class FlaskTestCase(unittest.TestCase):
         app.config['WTF_CSRF_ENABLED'] = False
 
         self.app.testing = True
+        self.user = User('etwin', 'etwin@us.com', 'etwin')
 
     def test_index_page_loads_properly(self):
         "Tests if the index page loads properly"
@@ -296,7 +298,7 @@ class FlaskTestCase(unittest.TestCase):
                     password="etwin"
                 ))
             response = client.get('/category', content_type="html/text")
-            categories = session["category"]
+            categories = self.user.user_categories
             self.assertEqual(len(categories), 0)
             self.assertIn(b'No Categories Added yet', response.data)
 

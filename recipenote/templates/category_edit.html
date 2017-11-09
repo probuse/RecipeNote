@@ -2,7 +2,8 @@
 {% block content %}
     <br>
     <h1>Edit Category</h1>
-    <form method="post", action="category_edit">
+    <form method="post", action="/category_edit/{{ name }}">
+        {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.name(class="form-control")}}
         </div>

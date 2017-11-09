@@ -59,21 +59,26 @@ class UserModelTestCase(unittest.TestCase):
     #         self.user.user_recipes[self.recipes.name], 
     #         new_recipe_methods.splitlines())
     
-    # def test_can_delete_recipe(self):
-    #     "Tests user can delete recipe"
-    #     len_of_recipe_dict = len(self.user.user_recipes)
-    #     len_of_category_dict_with_recipe = len(
-    #         self.user.user_categories[self.category.name]
-    #         )
-    #     del self.user.user_recipes[self.recipes.name]
-    #     len_of_recipe_dict2 = len(self.user.user_recipes)
-    #     len_of_category_dict_with_recipe2 = len(
-    #         self.user.user_categories[self.category.name]
-    #         )
-    #     self.assertEqual(len_of_recipe_dict, 1)
-    #     self.assertEqual(len_of_recipe_dict2, 0)
-    #     self.assertEqual(len_of_category_dict_with_recipe, 1)
-    #     self.assertEqual(len_of_category_dict_with_recipe2, 0)
+    def test_can_delete_recipe(self):
+        "Tests user can delete recipe"
+        len_of_category = len(self.user.user_categories['Local Foods'])
+        self.user.delete_recipe('rolex')
+        len_of_category2 = len(self.user.user_categories['Local Foods'])
+        # self.user.delete_recipe('rolex')
+        # len_of_recipe_dict = len(self.user.user_recipes)
+        # len_of_category_dict_with_recipe = len(
+        #     self.user.user_categories[self.category.name]
+        #     )
+        # del self.user.user_recipes[self.recipes.name]
+        # len_of_recipe_dict2 = len(self.user.user_recipes)
+        # len_of_category_dict_with_recipe2 = len(
+        #     self.user.user_categories[self.category.name]
+        #     )
+        # self.assertEqual(len_of_recipe_dict, 1)
+        # self.assertEqual(len_of_recipe_dict2, 0)
+        self.assertEqual(len_of_category, 1)
+        self.assertEqual(len_of_category2, 1)
+        # self.assertEqual(len_of_category_dict_with_recipe2, 0)
 
 if __name__ == "__main__":
     unittest.main()

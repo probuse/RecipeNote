@@ -64,7 +64,10 @@ class User(object):
 
     def delete_recipe(self, recipe_name):
         "Deletes recipe with recipe name"
-        pass
+        del self.user_recipes[recipe_name]
+        for recipes in self.user_categories.keys():
+                if recipe_name in self.user_categories[recipes]:
+                    del recipe_name
     
 
 

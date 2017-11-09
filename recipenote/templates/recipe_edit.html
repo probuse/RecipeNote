@@ -2,38 +2,22 @@
 {% block content %}
     <br>
     <h1>Edit Your Recipe</h1>
-    <form>
+    <form method="post" action="/recipe_edit/{{ recipe_name }}>">
+        {{ form_recipe.hidden_tag() }}
     <div class="form-group">
-        <!-- <label for="exampleInputEmail1">Email address</label> -->
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Recipe Name">
-        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+        <div class="form-group">{{ form_recipe.name(placeholder="e.g rolex", class="form-control", required="required", id="name", type="text") }}</div>
     </div>
     <div class="form-group">
         <label for="exampleSelect1">Select Category</label>
-        <select class="form-control" id="exampleSelect1">
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-        <option>5</option>
+        <select class="form-control" name="selectedCategory">
+            {% for category in categories %}
+            <option>{{ category }}</option>
+            {% endfor %}
         </select>
     </div>
     <div class="form-group">
-        <label for="exampleTextarea">Enter Recipe Ingredients as a list</label>
-        <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
-    </div>
-    <div class="form-group">
         <label for="example2Textarea">How is the recipe prepared?</label>
-        <textarea class="form-control" id="example2Textarea" rows="3"></textarea>
-    </div>
-    <div class="form-group">
-        <input type="text" class="form-control" id="exampleInputTime" aria-describedby="timeHelp" placeholder="How long does it take to prepare?">
-        <small id="timeHelp" class="form-text text-muted">Please specify how long it takes in minutes.</small>
-    </div>
-    <div class="form-group">
-        <label for="exampleInputFile">Upload Recipe Image</label>
-        <input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
-        <small id="fileHelp" class="form-text text-muted">This image will help you to visually find a recipe</small>
+        <div class="form-group">{{ form_recipe.prep_method(placeholder="Enter a list of instructions to prepare recipe", class="form-control", required="required", id="prep_method", type="text") }}</div>      
     </div>
     <div class="row">
         <div class="col-md-6 pull-right"><button type="submit" class="btn-lg btn-danger">Delete Recipe</button></div>
