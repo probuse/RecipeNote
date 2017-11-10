@@ -1,9 +1,7 @@
-{% import "bootstrap/utils.html" as utils %}
 {% extends "base.html" %}
 {% block content %}
     <br>
     <h1>Create a new Category</h1>
-    {{ utils.flashed_messages(dismissible=True) }}
     <form method="post", action="category_add">
         {{ form_categories.hidden_tag() }}
         <div class="form-group">
