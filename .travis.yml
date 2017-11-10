@@ -11,7 +11,7 @@ before_install:
 
 script: 
     # - "python test.py"
-    - nosetests --with-coverage --cover-package=test
+    - nosetests --with-coverage --cover-package=recipenote
 
 after_sucess:
     - coveralls
