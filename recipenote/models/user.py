@@ -11,12 +11,11 @@ class User(object):
         self.email = email
         self.password1 = password
         self.user_categories = {}
-        self.user_recipes = {}
 
     def create_category(self, category_name):
         "creates a category"
         category = Category(category_name)
-        self.user_categories[category.name] = []
+        self.user_categories[category.name] = {}
         return category
 
     def edit_category_name(self, old_name, new_name):
@@ -35,29 +34,19 @@ class User(object):
         recipe_prep_method):
         "Creates a recipe"
         if category_name not in self.user_categories.keys():
-            raise KeyError("{} does not exist".format(category_name))
-        recipe = Recipe(recipe_name, recipe_prep_method)
-        self.user_categories[category_name].append(recipe_name)
-        self.user_recipes[recipe_name] = recipe_prep_method.splitlines()
+            return "{} does not exist".format(category_name)
+        recipe = Recipe(recipe_name,category_name, recipe_prep_method.splitlines())
+        self.user_categories[category_name][recipe_name] = recipe_prep_method.splitlines()
         return recipe
 
-    def edit_recipe_name(self, old_name, new_name):
+    def edit_recipe(self, old_name, new_name, new_method):
         "Helps to update a recipe name to a new name"
-        print(self.user_recipes)
-        if old_name in self.user_recipes.keys():
-            self.user_recipes[new_name] = self.user_recipes.pop(old_name)
-            for recipe in self.user_categories.values():
-                if old_name in recipe:
-                    recipe.remove(old_name)
-                    recipe.append(new_name)
-
-        else:
-            raise KeyError('{} does not exist as a recipe name'.format(old_name))
-
-    def edit_recipe_prep_method(self,recipe, new_method):
-        "Updates recipe_prep_method to a new method"
-        if recipe in self.user_recipes:
-            self.user_recipes[recipe] = new_method
+        for category in self.user_categories:
+            if old_name in self.user_categories[category]:
+                self.user_categories[category][new_name] = self.user_categories[category].pop(old_name)
+                self.user_categories[category][new_name] = new_method.splitlines()
+            else:
+                return '{} does not exist as a recipe name'.format(old_name)
 
     def delete_recipe(self, recipe_name):
         "Deletes recipe with recipe name"
