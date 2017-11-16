@@ -8,12 +8,14 @@ class UserModelTestCase(unittest.TestCase):
     def setUp(self):
         self.user = User("etwin", "etwin@us.com", "etwin")
         self.category = self.user.create_category('Local Foods')
-        self.recipes = self.user.create_recipes(
-            'rolex', 
-            self.category.name, 
-            'beat eggs\nfry them\nadd chapatti')
+        self.recipe = self.user.create_recipes(
+            "rolex", self.category.name, 'beat eggs\nfry them\nadd chapatti')
+        # self.recipes = self.user.create_recipes(
+        #     'rolex', 
+        #     self.category.name, 
+        #     'beat eggs\nfry them\nadd chapatti')
 
-    def test_user_has_creates_category(self):
+    def test_user_has_created_category(self):
         "Tests to see user has created a category"
         self.assertEqual(self.category.name, "Local Foods")
 
@@ -33,22 +35,19 @@ class UserModelTestCase(unittest.TestCase):
 
     def test_user_can_add_recipe(self):
         "Tests user is able to add recipe"
-        self.assertListEqual(
-            self.user.user_categories[self.category.name], 
-            ['rolex'])
+        num_of_recipes = len(self.user.user_categories[self.category.name])
+        self.user.create_recipes("ugali", self.category.name, "boil beans\nboil maize\nadd salt")
+        num_of_recipes2 = len(self.user.user_categories[self.category.name])
+        self.assertEqual( num_of_recipes, 1)
+        self.assertEqual( num_of_recipes2, 2)
 
-    def test_user_recipe_prep_method(self):
-        "Tests user is able to add recipe"
-        self.assertListEqual(
-            self.user.user_recipes['rolex'], 
-            ['beat eggs', 'fry them', 'add chapatti'])
-
-    def test_user_can_edit_recipe_name(self):
-        "Test user can edit recipe name"
+    def test_user_can_edit_recipe(self):
+        "Test user can edit recipe"
         new_recipe_name = 'Junk'
-        self.user.edit_recipe_name(self.recipes.name, new_recipe_name)
+        self.user.edit_recipe(
+            self.recipe.name, new_recipe_name, 'beat eggs\nfry them\nadd chapatti')
         self.assertEqual(
-            self.user.user_recipes[new_recipe_name], 
+            self.user.user_categories['Local Foods'][new_recipe_name], 
             'beat eggs\nfry them\nadd chapatti'.splitlines())
     
     def test_can_delete_recipe(self):
