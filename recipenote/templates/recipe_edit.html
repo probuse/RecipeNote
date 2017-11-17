@@ -2,7 +2,7 @@
 {% block content %}
     <br>
     <h1>Edit Your Recipe</h1>
-    <form method="post", action="/recipe_edit/{{ recipe_name }}>">
+    <form method="post", action="/recipe_edit/{{ recipe_name }}">
         {{ form_recipe.hidden_tag() }}
     <div class="form-group">
         <div class="form-group">{{ form_recipe.name(placeholder="e.g rolex", class="form-control", required="required", id="name", type="text") }}</div>
