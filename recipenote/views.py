@@ -102,9 +102,10 @@ def login():
 def recipes():
     "Renders the recipes page"
     user = logged_in_users['user']
-    user_recipes = user.user_recipes
-    print(user_recipes)
-    return render_template('recipes.html', user_recipes=user_recipes)
+    # for category in user.user_categories:
+    user_categories = user.user_categories
+    print(user_categories)
+    return render_template('recipes.html', user_categories=user_categories)
 
 @app.route('/recipe_detail/<recipe_name>')
 @login_required
@@ -112,9 +113,11 @@ def recipe_detail(recipe_name):
     "Renders the recipes detail page"
     user = logged_in_users['user']
 
-    for recipe in user.user_recipes.keys():
-        if recipe == recipe_name:
-            prep_method = user.user_recipes[recipe]
+    for category in user.user_categories:
+        for recipe in user.user_categories[category]:
+            if recipe == recipe_name:
+                prep_method = user.user_categories[category][recipe]
+                print(recipe, "=>", prep_method)
     return render_template('recipe_detail.html', 
                             recipe_name=recipe_name,
                             prep_method=prep_method)
@@ -138,7 +141,7 @@ def recipes_add():
             selected_category, 
             form_recipe.prep_method.data)
         print(new_recipe.name)
-        flash({"message": "Your recipe has been successfully added"})
+        flash("Your recipe has been successfully added")
         return redirect(url_for("recipes"))
     return render_template(
             'recipes_add.html', 
@@ -146,35 +149,37 @@ def recipes_add():
             categories=categories
         )
 
-# @app.route('/recipe_edit', methods=['POST', 'GET'])
 @app.route('/recipe_edit/<recipe_name>', methods=['POST', 'GET'])
 @login_required
 def recipe_edit(recipe_name):
     "Renders the edit page for recipes"
     user = logged_in_users['user']
 
-    for recipe in user.user_recipes:
-        if recipe_name == recipe:
-            recipe = Recipe(recipe, user.user_recipes[recipe])
+    for category in user.user_categories:
+        for recipe in user.user_categories[category]:
+            if recipe == recipe_name:
+                recipe = Recipe(recipe, user.user_categories[category][recipe])
+    categories = user.user_categories.keys()
     form_recipe = RecipesForm(obj=recipe)   
 
-    print(user.user_recipes, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+    print(user.user_categories, "<<<<<<<<<<<<<<<<<<<<<<<<<<")
     if form_recipe.validate_on_submit():
         if request.method == 'POST':    
             edited_name_category = request.form['selectedCategory']
         edited_new_name = form_recipe.name.data
         edited_prep_method = form_recipe.prep_method.data
-        del user.user_recipes[recipe_name]
-        print(user.user_recipes, ">>>>>>>>>>>>>>>>>>>>>>>>>")
+        user.delete_recipe(recipe_name)
+        print(user.user_categories, ">>>>>>>>>>>>>>>>>>>>>>>>>")
         user.create_recipes(
             edited_new_name, 
             edited_name_category, 
             edited_prep_method)
-        flash({"message": "Your recipe has been successfully Updated"})
+        flash("Your recipe has been successfully Updated")
         print("++++", edited_new_name, edited_name_category, edited_prep_method, "++++")
         return redirect(url_for('recipes'))
     
-    return render_template('recipe_edit.html', 
+    return render_template('recipe_edit.html',
+                            categories=categories,
                             form_recipe=form_recipe,
                             recipe_name=recipe_name)
 
@@ -188,7 +193,7 @@ def category_add():
     
     if form_categories.validate_on_submit():
         user.create_category(form_categories.name.data)
-        flash({"message": "Category has been successfully added"})
+        flash("Category has been successfully added")
         return redirect(url_for("category"))
     return render_template('category_create.html',
                             form_categories=form_categories)
@@ -214,7 +219,7 @@ def category_edit(name):
     if form.validate_on_submit():
         user.edit_category_name(name, form.name.data)
         print(form.name.data, "-----------")
-        flash({"message": "Your category has been successfully Updated"})
+        flash("Your category has been successfully Updated")
         return redirect(url_for('category'))
     return render_template(
             'category_edit.html', 
@@ -227,8 +232,7 @@ def delete_category(category_name):
     "Deletes category name"
     user = logged_in_users['user']
     user.delete_category(category_name)
-    flash(
-        {"message": "Category {} has been successfully been deleted".format(category_name)})
+    flash("Category {} has been successfully been deleted".format(category_name))
     return redirect(url_for('category'))
 
 @app.route('/logout')
