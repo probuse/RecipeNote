@@ -2,28 +2,34 @@
 {% block content %}
 <!-- Page Heading -->
 <div>
-      <h1 class="my-4">Recipes</h1>
-      <div class="text-right"><a href="/recipes_add"><button class="btn-primary btn-lg">Add Recipe</button></a></div>
-      <br>
+    <br>
+    <div class="text-right"><a href="/recipes_add"><button class="btn-primary btn-lg">Add Recipe</button></a></div>
+    <h1 class="my-4">Recipes</h1>
   </div> 
+{% if user_categories %}
 <div class="row">
-  {% for recipe in user_recipes %}
-  <div class="col-lg-4 col-sm-6 portfolio-item">
-    <div class="card h-100">
-      <a href="#"><img class="card-img-top" src="static/images/food.jpeg" alt=""></a>
-      <div class="card-body">
-        <h4 class="card-title">
-          <a href="{{ url_for('recipe_detail', recipe_name=recipe) }}">{{ recipe }}</a>
-        </h4>
-        <p class="card-text">
-          {% for prep_method in user_recipes[recipe] %}
-            <p>{{ prep_method }}</p>
-          {% endfor %}
-        </p>
+  {% for category in user_categories %}
+    {% for recipe in user_categories[category].keys() %}
+    <div class="col-lg-4 col-sm-6 portfolio-item">
+      <div class="card h-100">
+        <a href="#"><img class="card-img-top" src="static/images/food.jpeg" alt=""></a>
+        <div class="card-body">
+          <h4 class="card-title">
+            <a href="{{ url_for('recipe_detail', recipe_name=recipe) }}">{{ recipe }}</a>
+          </h4>
+          <p class="card-text">
+            {% for prep_method in user_categories[category][recipe] %}
+              <p>{{ prep_method }}</p>
+            {% endfor %}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
+    {% endfor %}
   {% endfor %}
 </div>
+{% else %}
+<p>No Recipes Added yet</p>
+{% endif %}
 <!-- /.row -->
 {% endblock %}
