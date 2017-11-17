@@ -56,7 +56,7 @@ class UserModelTestCase(unittest.TestCase):
         self.user.delete_recipe('rolex')
         len_of_category2 = len(self.user.user_categories['Local Foods'])
         self.assertEqual(len_of_category, 1)
-        # self.assertEqual(len_of_category2, 0)
+        self.assertEqual(len_of_category2, 0)
 
 if __name__ == "__main__":
     unittest.main()
