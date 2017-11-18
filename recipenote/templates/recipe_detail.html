@@ -2,6 +2,7 @@
 {% block content %}
     <h1>Recipe Details</h1>
     <div class="text-right"><br><a href="{{ url_for('recipe_edit', recipe_name=recipe_name)}}"><button class="btn-primary btn-lg">Edit Recipe</button></a></div>
+    <a href="{{ url_for('delete_recipe', recipe_name=recipe_name)}}"><button class="btn-primary btn-lg">Delete Recipe</button></a>
     <div class="card mt-4">
         <img class="card-img-top img-fluid" src="static/images/sphagz.jpg" alt="">
         <div class="card-body">
