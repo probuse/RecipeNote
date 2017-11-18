@@ -183,6 +183,18 @@ def recipe_edit(recipe_name):
                             form_recipe=form_recipe,
                             recipe_name=recipe_name)
 
+@app.route('/delete_recipe/<recipe_name>')
+def delete_recipe(recipe_name):
+    "Deletes selected recipe"
+    user = logged_in_users['user']
+
+    for category in user.user_categories:
+        for recipe in user.user_categories[category]:
+            if recipe == recipe_name:
+                user.delete_recipe(recipe)
+                return redirect(url_for('recipes'))
+
+
 @app.route('/category_add', methods=["GET", "POST"])
 @login_required
 def category_add():
