@@ -47,7 +47,6 @@ def register():
     form = RegisterationForm()
    
     if form.validate_on_submit():
-        # Check for password mismatch
         if form.password.data != form.password2.data:
             message = "Your passwords do not match"
             flash(message)
@@ -102,7 +101,6 @@ def login():
 def recipes():
     "Renders the recipes page"
     user = logged_in_users['user']
-    # for category in user.user_categories:
     user_categories = user.user_categories
     print(user_categories)
     return render_template('recipes.html', user_categories=user_categories)
@@ -162,14 +160,12 @@ def recipe_edit(recipe_name):
     categories = user.user_categories.keys()
     form_recipe = RecipesForm(obj=recipe)   
 
-    print(user.user_categories, "<<<<<<<<<<<<<<<<<<<<<<<<<<")
     if form_recipe.validate_on_submit():
         if request.method == 'POST':    
             edited_name_category = request.form['selectedCategory']
         edited_new_name = form_recipe.name.data
         edited_prep_method = form_recipe.prep_method.data
         user.delete_recipe(recipe_name)
-        print(user.user_categories, ">>>>>>>>>>>>>>>>>>>>>>>>>")
         user.create_recipes(
             edited_new_name, 
             edited_name_category, 
@@ -230,7 +226,6 @@ def category_edit(name):
     form = CategoryForm(obj=category)
     if form.validate_on_submit():
         user.edit_category_name(name, form.name.data)
-        print(form.name.data, "-----------")
         flash("Your category has been successfully Updated")
         return redirect(url_for('category'))
     return render_template(
