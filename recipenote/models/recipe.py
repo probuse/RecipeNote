@@ -4,7 +4,6 @@
 class Recipe(object):
     "Controls Recipe object"
 
-    def __init__(self, name):
+    def __init__(self, name, prep_method):
         self.name = name
-        self.ingredients = []
-    
+        self.prep_method = prep_method    

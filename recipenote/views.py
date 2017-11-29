@@ -9,69 +9,19 @@ from functools import wraps
 
 from . import app
 from .forms import LoginForm, RegisterationForm, RecipesForm, CategoryForm
-from recipenote.models.user import User
+from recipenote.models.user import Category, Recipe, User
+from recipenote.sessions.sessions import SessionUser
 
 app.secret_key = "StumblingFromRightQuestionsToWrongAnswers"
 
 logged_in_users = {}
 
-class Base:
-    "Used to generate session_id"
-
-    def generate_session_id(self, session_key):
-        """returns a randomly generated session_id if not in session already
-        Random no one guesses it :-)"""
-        session_id = str(os.urandom(10))
-        while session_id in session[session_key]:
-            session_id = str(os.urandom(10))
-
-        return session_id
-
-class SessionUser(Base):
-    "Stores the user object during a session"
-   
-    def __init__(self, username, email, password):
-        self.username = username
-        self.email = email
-        self.password = password
-        self.id = self.generate_session_id("users")
-
-
-class Recipe(Base):
-    "Stores the recipe object during a session"
-
-    def __init__(self, name, category, ingredients, prep_method, prep_time):
-        self.name = str(name).title()
-        self.category = str(category).title()
-        self.ingredients = ingredients
-        self.prep_method = prep_method
-        self.user_id = session["logged_in"]["id"]
-        self.prep_time = prep_time
-        self.id = self.generate_session_id("recipe")
-
-
-class Category(Base):
-    "Stores the category object during a session"
-
-    def __init__(self, name):
-        self.name = name
-        self.user_id = session["logged_in"]["id"]
-        self.id = self.generate_session_id("category")
-
-
-
 def create_appplication_session_keys():
     "creates application session for different keys"
     if "users" not in session:
         session["users"] = {}
-    if "category" not in session:
-        session["category"] = {}
-    if "recipe" not in session:
-        session["recipe"] = {}
     if "logged_in" not in session:
         session["logged_in"] = None
-   
-    
 
 
 def login_required(f):
@@ -85,17 +35,8 @@ def login_required(f):
             return redirect(url_for("login"))
     return wrap
 
-def get_user():
-    "Returns a user currently logged in info"
-    if 'logged_in' in session and session['logged_in'] is not None:
-        username = session['logged_in'].get('username')
-        email = session['logged_in'].get('email')
-        password = session['logged_in'].get('password')
-        user = User(username, email, password)
-        return username, email, password
-
 @app.route('/')
-def index():
+def index():    
     "Renders the landing page"
     return render_template('index.html')
 
@@ -106,7 +47,6 @@ def register():
     form = RegisterationForm()
    
     if form.validate_on_submit():
-        # Check for password mismatch
         if form.password.data != form.password2.data:
             message = "Your passwords do not match"
             flash(message)
@@ -126,11 +66,11 @@ def register():
             form.email.data, 
             form.password.data
         )
-        logged_in_users['1'] = user_object
+        logged_in_users['user'] = user_object
 
         session["users"][new_user.id] = vars(new_user)
         session['logged_in'] = vars(new_user)
-        flash({"message": "Your account has been created, Login to continue"})
+        flash("Your account has been created, Login to continue")
         return redirect(url_for("login"))
     return render_template("register.html", title="Create Profile", form=form)
 
@@ -148,9 +88,11 @@ def login():
             password = form.password.data.strip()
         
             if user["username"] == username and user["password"] == password:
+                flash("You are now logged in")
                 return redirect(url_for("recipes"))
-            message = "Wrong username or password, Please Try Again"
-            flash(message)
+            else:
+                message = "Wrong username or password, Please Try Again"
+                flash(message)
     return render_template('login.html', title='Login', form=form)
 
 
@@ -158,43 +100,96 @@ def login():
 @login_required
 def recipes():
     "Renders the recipes page"
-    return render_template('recipes.html')
+    user = logged_in_users['user']
+    user_categories = user.user_categories
+    print(user_categories)
+    return render_template('recipes.html', user_categories=user_categories)
 
-@app.route('/recipe_detail')
+@app.route('/recipe_detail/<recipe_name>')
 @login_required
-def recipe_detail():
+def recipe_detail(recipe_name):
     "Renders the recipes detail page"
-    return render_template('recipe_detail.html')
+    user = logged_in_users['user']
+
+    for category in user.user_categories:
+        for recipe in user.user_categories[category]:
+            if recipe == recipe_name:
+                prep_method = user.user_categories[category][recipe]
+                print(recipe, "=>", prep_method)
+    return render_template('recipe_detail.html', 
+                            recipe_name=recipe_name,
+                            prep_method=prep_method)
 
 @app.route('/recipes_add', methods=["GET", "POST"])
 @login_required
 def recipes_add():
     "Renders the create page for recipes"
     create_appplication_session_keys()
+    user = logged_in_users['user']
     form_recipe = RecipesForm()
     form_categories = CategoryForm()
+    categories = user.user_categories.keys()
+
+    if request.method == 'POST':
+        selected_category = request.form['selectedCategory']
 
     if form_recipe.validate_on_submit():
-        recipe = RecipesForm(
+        new_recipe = user.create_recipes(
             form_recipe.name.data, 
-            form_recipe.ingredients.data, 
-            form_recipe.prep_method.data, 
-            )
-        session["recipe"][recipe.id] = vars(recipe)
-
-        flash({"message": "Your recipe has been successfully added"})
+            selected_category, 
+            form_recipe.prep_method.data)
+        print(new_recipe.name)
+        flash("Your recipe has been successfully added")
         return redirect(url_for("recipes"))
     return render_template(
             'recipes_add.html', 
             form_recipe=form_recipe, 
-            form_categories=form_categories
+            categories=categories
         )
 
-@app.route('/recipe_edit')
+@app.route('/recipe_edit/<recipe_name>', methods=['POST', 'GET'])
 @login_required
-def recipe_edit():
+def recipe_edit(recipe_name):
     "Renders the edit page for recipes"
-    return render_template('recipe_edit.html')
+    user = logged_in_users['user']
+
+    for category in user.user_categories:
+        for recipe in user.user_categories[category]:
+            if recipe == recipe_name:
+                recipe = Recipe(recipe, user.user_categories[category][recipe])
+    categories = user.user_categories.keys()
+    form_recipe = RecipesForm(obj=recipe)   
+
+    if form_recipe.validate_on_submit():
+        if request.method == 'POST':    
+            edited_name_category = request.form['selectedCategory']
+        edited_new_name = form_recipe.name.data
+        edited_prep_method = form_recipe.prep_method.data
+        user.delete_recipe(recipe_name)
+        user.create_recipes(
+            edited_new_name, 
+            edited_name_category, 
+            edited_prep_method)
+        flash("Your recipe has been successfully Updated")
+        print("++++", edited_new_name, edited_name_category, edited_prep_method, "++++")
+        return redirect(url_for('recipes'))
+    
+    return render_template('recipe_edit.html',
+                            categories=categories,
+                            form_recipe=form_recipe,
+                            recipe_name=recipe_name)
+
+@app.route('/delete_recipe/<recipe_name>')
+def delete_recipe(recipe_name):
+    "Deletes selected recipe"
+    user = logged_in_users['user']
+
+    for category in user.user_categories:
+        for recipe in user.user_categories[category]:
+            if recipe == recipe_name:
+                user.delete_recipe(recipe)
+                return redirect(url_for('recipes'))
+
 
 @app.route('/category_add', methods=["GET", "POST"])
 @login_required
@@ -202,11 +197,11 @@ def category_add():
     "Renders the page to create a new category"
     create_appplication_session_keys()
     form_categories = CategoryForm()
-    user = logged_in_users['1']
-
+    user = logged_in_users['user']
+    
     if form_categories.validate_on_submit():
         user.create_category(form_categories.name.data)
-        print(user.username)
+        flash("Category has been successfully added")
         return redirect(url_for("category"))
     return render_template('category_create.html',
                             form_categories=form_categories)
@@ -216,26 +211,42 @@ def category_add():
 def category():
     "Renders the category page"
     create_appplication_session_keys()
-    user = logged_in_users['1']
+    user = logged_in_users['user']
     categories = user.user_categories.keys()
-    print(categories)
-    # recipes_per_category = session["recipe"]["category"]
-    # num_recipes_per_category = len(recipes_per_category)
-
 
     return render_template('category.html', 
                             categories=categories   )
 
-@app.route('/category_edit')
+@app.route('/category_edit/<name>', methods=['POST', 'GET'])
 @login_required
-def category_edit():
+def category_edit(name):
     "Renders the page for editing and deleting a category"
-    return render_template('category_edit.html')
+    user = logged_in_users['user']
+    category = Category(name)
+    form = CategoryForm(obj=category)
+    if form.validate_on_submit():
+        user.edit_category_name(name, form.name.data)
+        flash("Your category has been successfully Updated")
+        return redirect(url_for('category'))
+    return render_template(
+            'category_edit.html', 
+            form=form,
+            name=name)
+
+@app.route('/delete_category/<category_name>', methods=['POST', 'GET'])
+@login_required
+def delete_category(category_name):
+    "Deletes category name"
+    user = logged_in_users['user']
+    user.delete_category(category_name)
+    flash("Category {} has been successfully been deleted".format(category_name))
+    return redirect(url_for('category'))
 
 @app.route('/logout')
 @login_required
 def logout():
     "Renders the logout page"
     session.pop('users', None)
+    del logged_in_users['user']
     flash("You are now logged out")
     return redirect(url_for("index"))

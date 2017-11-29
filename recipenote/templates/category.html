@@ -8,36 +8,26 @@
 </div>
 <h1>Your Categories</h1>
 <br>
+{% if categories %}
 <table class="table">
-    {% if categories %}
-    {% for category in categories %}
     <thead class="thead-inverse">
         <tr>
         <th>Category Name</th>
-        <th>Number of Recipes</th>
         <th>Edit</th>
+        <th>Delete</th>
         </tr>
     </thead>
     <tbody>
         <tr>
+        {% for category in categories %}
         <td>{{ category }}</td>
-        <td>3</td>
-        <td><a href="/recipe_edit">edit</a></td>
+        <td><a href="{{ url_for('category_edit', name=category) }}">edit</a></td>
+        <td><a href="{{ url_for('delete_category', category_name=category) }}">delete</a></td>
         </tr>
-        <!-- <tr>
-        <td>Drinks</td>
-        <td>6</td>
-        <td><a href="/recipe_edit">edit</a></td>
-        </tr>
-        <tr>
-        <td>Salads</td>
-        <td>2</td>
-        <td><a href="/recipe_edit">edit</a></td>
-        </tr> -->
+        {% endfor %}
     </tbody>
-    {% endfor %}
-    {% else %}
-    <p>No Categories Added yet</p>
-    {% endif %}
-    </table>
+</table>
+{% else %}
+<p>No Categories Added yet</p>
+{% endif %}
 {% endblock %}

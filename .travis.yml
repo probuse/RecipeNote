@@ -10,8 +10,8 @@ before_install:
     - pip install coveralls
 
 script: 
-    - "python test.py"
-    - nosetests --with-coverage --cover-package=test
+    # - "python test.py"
+    - nosetests --with-coverage --cover-package=recipenote
 
 after_sucess:
     - coveralls

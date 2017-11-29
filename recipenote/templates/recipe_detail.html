@@ -1,49 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>Recipe Details</h1>
-    <div class="text-right"><br><button class="btn-primary btn-lg">Edit Recipe</button></div>
+    <div class="text-right"><br><a href="{{ url_for('recipe_edit', recipe_name=recipe_name)}}"><button class="btn-primary btn-lg">Edit Recipe</button></a></div>
+    <a href="{{ url_for('delete_recipe', recipe_name=recipe_name)}}"><button class="btn-primary btn-lg">Delete Recipe</button></a>
     <div class="card mt-4">
         <img class="card-img-top img-fluid" src="static/images/sphagz.jpg" alt="">
         <div class="card-body">
-          <h3 class="card-title">Recipe Name</h3>
-          <p class="card-text text-right">Prepare time - 10 minutes</p>
+          <h3 class="card-title">{{ recipe_name }}</h3>
+          <!-- <p class="card-text text-right">Prepare time - 10 minutes</p> -->
         </div>
       </div>
       <!-- /.card -->
 
       <div class="card card-outline-secondary my-4">
         <div class="card-header">
-          Ingredients
+          <p>How {{ recipe_name }} is prepared</p>
         </div>
+        {% for method in prep_method %}
         <div class="card-body">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-          
-          <hr>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-          
-          <hr>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-          
-          <hr>
+          <p>{{ method }}</p>
+          {% endfor %}
         </div>
       </div>
       <!-- /.card -->
-
-      <div class="card card-outline-secondary my-4">
-            <div class="card-header">
-              How to prepare Recipe
-            </div>
-            <div class="card-body">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-              
-              <hr>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-              
-              <hr>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-              
-              <hr>
-            </div>
-          </div>
-          <!-- /.card -->
 {% endblock %}
